@@ -6,7 +6,458 @@
     <title>Learning Git: Connecting to GitHub from a New PC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css">
+    <style>
+        :root {
+            --primary: #2d3436;
+            --secondary: #0984e3;
+            --accent: #00b894;
+            --light: #f9f9f9;
+            --dark: #2d3436;
+            --gray: #636e72;
+            --light-gray: #dfe6e9;
+            --border-radius: 8px;
+            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 10px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            color: var(--primary);
+            margin-bottom: 8px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1:after {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 4px;
+            background: var(--accent);
+            bottom: -8px;
+            left: 15%;
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--gray);
+            max-width: 800px;
+            margin: 15px auto;
+            padding: 0 10px;
+        }
+        
+        .method-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 0 5px;
+        }
+        
+        .method-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        @media (max-width: 576px) {
+            .method-btn {
+                padding: 8px 15px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        .method-btn:hover {
+            background: var(--light-gray);
+        }
+        
+        .method-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .method-content {
+            display: none;
+        }
+        
+        .method-content.active {
+            display: block;
+        }
+        
+        .method-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .method-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: auto;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-size: 1.3rem;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .method-card {
+            border-top: 4px solid var(--secondary);
+        }
+        
+        .method-card:nth-child(2) {
+            border-color: var(--accent);
+        }
+        
+        .method-card:nth-child(3) {
+            border-color: #e17055;
+        }
+        
+        .method-card:nth-child(4) {
+            border-color: #a29bfe;
+        }
+        
+        .method-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .method-card:nth-child(2) .method-number {
+            background: var(--accent);
+        }
+        
+        .method-card:nth-child(3) .method-number {
+            background: #e17055;
+        }
+        
+        .method-card:nth-child(4) .method-number {
+            background: #a29bfe;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: var(--light-gray);
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            margin-bottom: 5px;
+        }
+        
+        .tag.common {
+            background: #c7ecee;
+            color: #006266;
+        }
+        
+        .tag.fork {
+            background: #ffeaa7;
+            color: #5c3c00;
+        }
+        
+        .tag.manual {
+            background: #fab1a0;
+            color: #5c0000;
+        }
+        
+        .tag.ssh {
+            background: #d8bfd8;
+            color: #4b004b;
+        }
+        
+        .method-explanation {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        
+        .command-box {
+            background: var(--primary);
+            color: var(--light);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            font-family: 'Roboto Mono', monospace;
+            margin: 12px 0;
+            overflow-x: auto;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        .command-box code {
+            background: transparent;
+            padding: 0;
+            font-family: inherit;
+        }
+        
+        .command-box .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: background 0.2s;
+            z-index: 10;
+        }
+        
+        .command-box .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .command-line {
+            color: #00b894;
+        }
+        
+        .command-comment {
+            color: #95a5a6;
+            font-style: italic;
+        }
+        
+        .step-list {
+            margin: 15px 0 15px 20px;
+            padding: 0;
+        }
+        
+        .step-list li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 5px;
+        }
+        
+        .step-list li:before {
+            content: '▸';
+            color: var(--secondary);
+            position: absolute;
+            left: -15px;
+        }
+        
+        .highlight-box {
+            background: #ffeaa7;
+            border-left: 4px solid #fdcb6e;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            font-size: 0.95rem;
+        }
+        
+        .key-point {
+            background: #fffacd;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin: 12px 0;
+            border-left: 4px solid #ffd700;
+            font-size: 0.95rem;
+        }
+        
+        .workflow-box {
+            background: #dff9fb;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            border-left: 4px solid #00cec9;
+        }
+        
+        .scenario-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .question {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .question i {
+            color: var(--secondary);
+            margin-right: 8px;
+        }
+        
+        .answer {
+            margin-left: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .checklist {
+            margin: 15px 0;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .checklist-item i {
+            color: var(--accent);
+            margin-right: 10px;
+            font-size: 1.1rem;
+            margin-top: 3px;
+        }
+        
+        .recommendation-box {
+            background: #dfe6e9;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            border: 2px dashed var(--gray);
+        }
+        
+        .recommendation-title {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px 10px;
+            color: var(--gray);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--light-gray);
+            margin-top: 20px;
+        }
+        
+        .git-icon {
+            color: #f1502f;
+            margin: 0 5px;
+        }
+        
+        .github-icon {
+            color: #333;
+            margin: 0 5px;
+        }
+        
+        /* Animation for recommended method */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(9, 132, 227, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0); }
+        }
+        
+        /* Fix for very small screens */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .command-box {
+                padding: 12px;
+                font-size: 0.85rem;
+            }
+            
+            .method-btn {
+                font-size: 0.8rem;
+                padding: 7px 12px;
+            }
+            
+            .card-title {
+                font-size: 1.2rem;
+            }
+        }
+        
+        /* Ensure content fits within viewport */
+        html, body {
+            overflow-x: hidden;
+        }
+        
+        /* Improve code readability on small screens */
+        pre, code {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -36,64 +487,66 @@
         <div class="main-content">
             <!-- Method 1 -->
             <div class="method-content active" id="method1">
-                <div class="card method-card">
-                    <div class="card-title">
-                        <div class="method-number">1</div>
-                        <h2>Clone + Existing Remote (Most Common)</h2>
-                    </div>
-                    
-                    <div class="tags">
-                        <span class="tag common">Most Common</span>
-                        <span class="tag">Simple</span>
-                        <span class="tag">Recommended</span>
-                    </div>
-                    
-                    <div class="method-explanation">
-                        <p>If you just want to get the code and continue where you left off, this is the simplest and most reliable method. The remote is automatically set up as <code>origin</code> when you clone.</p>
-                    </div>
-                    
-                    <div class="command-box">
-                        <button class="copy-btn" data-clipboard-target="#cmd1">Copy</button>
-                        <div id="cmd1">
-                            <span class="command-line"># 1. Clone the repository</span><br>
-                            git clone https://github.com/username/repo-name.git<br><br>
-                            
-                            <span class="command-line"># 2. Navigate into the project</span><br>
-                            cd repo-name<br><br>
-                            
-                            <span class="command-line"># 3. Check remote (it's already set to origin)</span><br>
-                            git remote -v<br>
-                            <span class="command-comment"># Should show: origin → your GitHub repo</span><br><br>
-                            
-                            <span class="command-line"># 4. Start working and push changes</span><br>
-                            git add .<br>
-                            git commit -m "Your message"<br>
-                            git push origin main
+                <div class="method-grid">
+                    <div class="card method-card">
+                        <div class="card-title">
+                            <div class="method-number">1</div>
+                            <h2>Clone + Existing Remote (Most Common)</h2>
+                        </div>
+                        
+                        <div class="tags">
+                            <span class="tag common">Most Common</span>
+                            <span class="tag">Simple</span>
+                            <span class="tag">Recommended</span>
+                        </div>
+                        
+                        <div class="method-explanation">
+                            <p>If you just want to get the code and continue where you left off, this is the simplest and most reliable method. The remote is automatically set up as <code>origin</code> when you clone.</p>
+                        </div>
+                        
+                        <div class="command-box">
+                            <button class="copy-btn" data-clipboard-target="#cmd1">Copy</button>
+                            <div id="cmd1">
+                                <span class="command-line"># 1. Clone the repository</span><br>
+                                git clone https://github.com/username/repo-name.git<br><br>
+                                
+                                <span class="command-line"># 2. Navigate into the project</span><br>
+                                cd repo-name<br><br>
+                                
+                                <span class="command-line"># 3. Check remote (it's already set to origin)</span><br>
+                                git remote -v<br>
+                                <span class="command-comment"># Should show: origin → your GitHub repo</span><br><br>
+                                
+                                <span class="command-line"># 4. Start working and push changes</span><br>
+                                git add .<br>
+                                git commit -m "Your message"<br>
+                                git push origin main
+                            </div>
+                        </div>
+                        
+                        <div class="key-point">
+                            <strong>When to use this:</strong> 99% of cases - when you just need to get your code on a new machine and continue working.
                         </div>
                     </div>
                     
-                    <div class="key-point">
-                        <strong>When to use this:</strong> 99% of cases - when you just need to get your code on a new machine and continue working.
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-title">
-                        <i class="fas fa-lightbulb"></i>
-                        <h2>How This Works</h2>
-                    </div>
-                    
-                    <ul class="step-list">
-                        <li><strong>git clone</strong> downloads the entire repository to your new PC</li>
-                        <li>Automatically creates a remote called <strong>origin</strong> pointing to the GitHub repo</li>
-                        <li>You get all commit history and the current state of the repository</li>
-                        <li>You can immediately start working and pushing changes</li>
-                    </ul>
-                    
-                    <div class="highlight-box">
-                        <strong>Note about branches:</strong> After cloning, you only get the default branch (usually main/master). To get other branches, use:<br><br>
-                        <div class="command-box">
-                            git checkout -b branch-name origin/branch-name
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fas fa-lightbulb"></i>
+                            <h2>How This Works</h2>
+                        </div>
+                        
+                        <ul class="step-list">
+                            <li><strong>git clone</strong> downloads the entire repository to your new PC</li>
+                            <li>Automatically creates a remote called <strong>origin</strong> pointing to the GitHub repo</li>
+                            <li>You get all commit history and the current state of the repository</li>
+                            <li>You can immediately start working and pushing changes</li>
+                        </ul>
+                        
+                        <div class="highlight-box">
+                            <strong>Note about branches:</strong> After cloning, you only get the default branch (usually main/master). To get other branches, use:<br><br>
+                            <div class="command-box">
+                                git checkout -b branch-name origin/branch-name
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -101,68 +554,70 @@
             
             <!-- Method 2 -->
             <div class="method-content" id="method2">
-                <div class="card method-card">
-                    <div class="card-title">
-                        <div class="method-number">2</div>
-                        <h2>Clone + Set Upstream (If Forked)</h2>
-                    </div>
-                    
-                    <div class="tags">
-                        <span class="tag fork">Forked Repos</span>
-                        <span class="tag">Open Source</span>
-                    </div>
-                    
-                    <div class="method-explanation">
-                        <p>If you're working with a forked repository (common in open source contributions), you need to set up two remotes: one for your fork and one for the original repository.</p>
-                    </div>
-                    
-                    <div class="command-box">
-                        <button class="copy-btn" data-clipboard-target="#cmd2">Copy</button>
-                        <div id="cmd2">
-                            <span class="command-line"># 1. Clone your fork</span><br>
-                            git clone https://github.com/YOUR-USERNAME/repo-name.git<br><br>
-                            
-                            <span class="command-line"># 2. Add upstream (original repo)</span><br>
-                            git remote add upstream https://github.com/ORIGINAL-OWNER/repo-name.git<br><br>
-                            
-                            <span class="command-line"># 3. Verify remotes</span><br>
-                            git remote -v<br>
-                            <span class="command-comment"># origin → your fork</span><br>
-                            <span class="command-comment"># upstream → original repo</span>
+                <div class="method-grid">
+                    <div class="card method-card">
+                        <div class="card-title">
+                            <div class="method-number">2</div>
+                            <h2>Clone + Set Upstream (If Forked)</h2>
+                        </div>
+                        
+                        <div class="tags">
+                            <span class="tag fork">Forked Repos</span>
+                            <span class="tag">Open Source</span>
+                        </div>
+                        
+                        <div class="method-explanation">
+                            <p>If you're working with a forked repository (common in open source contributions), you need to set up two remotes: one for your fork and one for the original repository.</p>
+                        </div>
+                        
+                        <div class="command-box">
+                            <button class="copy-btn" data-clipboard-target="#cmd2">Copy</button>
+                            <div id="cmd2">
+                                <span class="command-line"># 1. Clone your fork</span><br>
+                                git clone https://github.com/YOUR-USERNAME/repo-name.git<br><br>
+                                
+                                <span class="command-line"># 2. Add upstream (original repo)</span><br>
+                                git remote add upstream https://github.com/ORIGINAL-OWNER/repo-name.git<br><br>
+                                
+                                <span class="command-line"># 3. Verify remotes</span><br>
+                                git remote -v<br>
+                                <span class="command-comment"># origin → your fork</span><br>
+                                <span class="command-comment"># upstream → original repo</span>
+                            </div>
+                        </div>
+                        
+                        <div class="key-point">
+                            <strong>Why two remotes?</strong> <code>origin</code> is your fork where you push changes. <code>upstream</code> is the original repo to sync with latest changes.
                         </div>
                     </div>
                     
-                    <div class="key-point">
-                        <strong>Why two remotes?</strong> <code>origin</code> is your fork where you push changes. <code>upstream</code> is the original repo to sync with latest changes.
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-title">
-                        <i class="fas fa-code-branch"></i>
-                        <h2>Working with Forks</h2>
-                    </div>
-                    
-                    <p>With this setup, you can:</p>
-                    <ul class="step-list">
-                        <li>Push your changes to your fork (<code>origin</code>)</li>
-                        <li>Pull updates from the original repo (<code>upstream</code>) to stay current</li>
-                        <li>Create pull requests from your fork to the original repository</li>
-                    </ul>
-                    
-                    <div class="workflow-box">
-                        <strong>Typical fork workflow:</strong><br><br>
-                        <div class="command-box">
-                            <span class="command-comment"># Sync with original repo</span><br>
-                            git fetch upstream<br>
-                            git merge upstream/main<br><br>
-                            
-                            <span class="command-comment"># Make and commit changes</span><br>
-                            git add .<br>
-                            git commit -m "My changes"<br><br>
-                            
-                            <span class="command-comment"># Push to your fork</span><br>
-                            git push origin main
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fas fa-code-branch"></i>
+                            <h2>Working with Forks</h2>
+                        </div>
+                        
+                        <p>With this setup, you can:</p>
+                        <ul class="step-list">
+                            <li>Push your changes to your fork (<code>origin</code>)</li>
+                            <li>Pull updates from the original repo (<code>upstream</code>) to stay current</li>
+                            <li>Create pull requests from your fork to the original repository</li>
+                        </ul>
+                        
+                        <div class="workflow-box">
+                            <strong>Typical fork workflow:</strong><br><br>
+                            <div class="command-box">
+                                <span class="command-comment"># Sync with original repo</span><br>
+                                git fetch upstream<br>
+                                git merge upstream/main<br><br>
+                                
+                                <span class="command-comment"># Make and commit changes</span><br>
+                                git add .<br>
+                                git commit -m "My changes"<br><br>
+                                
+                                <span class="command-comment"># Push to your fork</span><br>
+                                git push origin main
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -170,225 +625,231 @@
             
             <!-- Method 3 -->
             <div class="method-content" id="method3">
-                <div class="card method-card">
-                    <div class="card-title">
-                        <div class="method-number">3</div>
-                        <h2>Transfer Local Repository + Add Remote</h2>
-                    </div>
-                    
-                    <div class="tags">
-                        <span class="tag manual">Manual Transfer</span>
-                        <span class="tag">Advanced</span>
-                    </div>
-                    
-                    <div class="method-explanation">
-                        <p>If you copied files manually (via USB, cloud storage, etc.) and want to connect them to your GitHub repository. Not generally recommended but useful in specific situations.</p>
-                    </div>
-                    
-                    <div class="command-box">
-                        <button class="copy-btn" data-clipboard-target="#cmd3">Copy</button>
-                        <div id="cmd3">
-                            <span class="command-line"># 1. Initialize git in your project folder</span><br>
-                            cd project-folder<br>
-                            git init<br><br>
-                            
-                            <span class="command-line"># 2. Add remote</span><br>
-                            git remote add origin https://github.com/username/repo-name.git<br><br>
-                            
-                            <span class="command-line"># 3. Pull the latest code first</span><br>
-                            git pull origin main --allow-unrelated-histories<br><br>
-                            
-                            <span class="command-line"># 4. If you have existing files, add and commit them</span><br>
-                            git add .<br>
-                            git commit -m "Initial commit from new PC"<br><br>
-                            
-                            <span class="command-line"># 5. Push (might need to force if histories differ)</span><br>
-                            git push -u origin main
+                <div class="method-grid">
+                    <div class="card method-card">
+                        <div class="card-title">
+                            <div class="method-number">3</div>
+                            <h2>Transfer Local Repository + Add Remote</h2>
+                        </div>
+                        
+                        <div class="tags">
+                            <span class="tag manual">Manual Transfer</span>
+                            <span class="tag">Advanced</span>
+                        </div>
+                        
+                        <div class="method-explanation">
+                            <p>If you copied files manually (via USB, cloud storage, etc.) and want to connect them to your GitHub repository. Not generally recommended but useful in specific situations.</p>
+                        </div>
+                        
+                        <div class="command-box">
+                            <button class="copy-btn" data-clipboard-target="#cmd3">Copy</button>
+                            <div id="cmd3">
+                                <span class="command-line"># 1. Initialize git in your project folder</span><br>
+                                cd project-folder<br>
+                                git init<br><br>
+                                
+                                <span class="command-line"># 2. Add remote</span><br>
+                                git remote add origin https://github.com/username/repo-name.git<br><br>
+                                
+                                <span class="command-line"># 3. Pull the latest code first</span><br>
+                                git pull origin main --allow-unrelated-histories<br><br>
+                                
+                                <span class="command-line"># 4. If you have existing files, add and commit them</span><br>
+                                git add .<br>
+                                git commit -m "Initial commit from new PC"<br><br>
+                                
+                                <span class="command-line"># 5. Push (might need to force if histories differ)</span><br>
+                                git push -u origin main
+                            </div>
+                        </div>
+                        
+                        <div class="key-point">
+                            <strong>Use with caution:</strong> The <code>--allow-unrelated-histories</code> flag is needed when combining unrelated git histories. Force push (<code>--force</code>) may be needed but can be dangerous.
                         </div>
                     </div>
                     
-                    <div class="key-point">
-                        <strong>Use with caution:</strong> The <code>--allow-unrelated-histories</code> flag is needed when combining unrelated git histories. Force push (<code>--force</code>) may be needed but can be dangerous.
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-title">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h2>When to Use This Method</h2>
-                    </div>
-                    
-                    <p>Consider this approach only when:</p>
-                    <ul class="step-list">
-                        <li>You manually copied files without using git</li>
-                        <li>You have uncommitted changes from your old PC that you couldn't push</li>
-                        <li>You're recovering from a backup without git history</li>
-                    </ul>
-                    
-                    <div class="highlight-box">
-                        <strong>Better Alternative:</strong> If you have uncommitted work on your old PC, try to commit and push it first. If that's not possible, commit locally on the old PC, then clone on the new PC.
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h2>When to Use This Method</h2>
+                        </div>
+                        
+                        <p>Consider this approach only when:</p>
+                        <ul class="step-list">
+                            <li>You manually copied files without using git</li>
+                            <li>You have uncommitted changes from your old PC that you couldn't push</li>
+                            <li>You're recovering from a backup without git history</li>
+                        </ul>
+                        
+                        <div class="highlight-box">
+                            <strong>Better Alternative:</strong> If you have uncommitted work on your old PC, try to commit and push it first. If that's not possible, commit locally on the old PC, then clone on the new PC.
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- Method 4 -->
             <div class="method-content" id="method4">
-                <div class="card method-card">
-                    <div class="card-title">
-                        <div class="method-number">4</div>
-                        <h2>Using SSH (More Secure)</h2>
-                    </div>
-                    
-                    <div class="tags">
-                        <span class="tag ssh">SSH</span>
-                        <span class="tag">Security</span>
-                        <span class="tag">No Password Prompt</span>
-                    </div>
-                    
-                    <div class="method-explanation">
-                        <p>SSH provides a more secure way to connect to GitHub without entering your password each time. Once set up, it's more convenient for frequent use.</p>
-                    </div>
-                    
-                    <div class="command-box">
-                        <button class="copy-btn" data-clipboard-target="#cmd4">Copy</button>
-                        <div id="cmd4">
-                            <span class="command-line"># 1. Generate SSH key on new PC (if not already)</span><br>
-                            ssh-keygen -t ed25519 -C "your-email@example.com"<br>
-                            <span class="command-comment"># Press Enter to accept defaults</span><br><br>
-                            
-                            <span class="command-line"># 2. Add SSH key to GitHub account</span><br>
-                            <span class="command-comment"># Copy the public key:</span><br>
-                            cat ~/.ssh/id_ed25519.pub<br>
-                            <span class="command-comment"># Add to: GitHub → Settings → SSH and GPG keys</span><br><br>
-                            
-                            <span class="command-line"># 3. Clone using SSH</span><br>
-                            git clone git@github.com:username/repo-name.git
+                <div class="method-grid">
+                    <div class="card method-card">
+                        <div class="card-title">
+                            <div class="method-number">4</div>
+                            <h2>Using SSH (More Secure)</h2>
+                        </div>
+                        
+                        <div class="tags">
+                            <span class="tag ssh">SSH</span>
+                            <span class="tag">Security</span>
+                            <span class="tag">No Password Prompt</span>
+                        </div>
+                        
+                        <div class="method-explanation">
+                            <p>SSH provides a more secure way to connect to GitHub without entering your password each time. Once set up, it's more convenient for frequent use.</p>
+                        </div>
+                        
+                        <div class="command-box">
+                            <button class="copy-btn" data-clipboard-target="#cmd4">Copy</button>
+                            <div id="cmd4">
+                                <span class="command-line"># 1. Generate SSH key on new PC (if not already)</span><br>
+                                ssh-keygen -t ed25519 -C "your-email@example.com"<br>
+                                <span class="command-comment"># Press Enter to accept defaults</span><br><br>
+                                
+                                <span class="command-line"># 2. Add SSH key to GitHub account</span><br>
+                                <span class="command-comment"># Copy the public key:</span><br>
+                                cat ~/.ssh/id_ed25519.pub<br>
+                                <span class="command-comment"># Add to: GitHub → Settings → SSH and GPG keys</span><br><br>
+                                
+                                <span class="command-line"># 3. Clone using SSH</span><br>
+                                git clone git@github.com:username/repo-name.git
+                            </div>
+                        </div>
+                        
+                        <div class="key-point">
+                            <strong>SSH Benefits:</strong> More secure than HTTPS, no password prompts after setup, required for some organizations.
                         </div>
                     </div>
                     
-                    <div class="key-point">
-                        <strong>SSH Benefits:</strong> More secure than HTTPS, no password prompts after setup, required for some organizations.
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-title">
-                        <i class="fas fa-shield-alt"></i>
-                        <h2>HTTPS vs SSH Authentication</h2>
-                    </div>
-                    
-                    <div class="method-explanation">
-                        <p><strong>HTTPS:</strong> You'll be prompted for username and password. If you have 2FA enabled, you need to use a Personal Access Token (PAT) as your password.</p>
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fas fa-shield-alt"></i>
+                            <h2>HTTPS vs SSH Authentication</h2>
+                        </div>
                         
-                        <p><strong>SSH:</strong> Uses cryptographic keys. The private key stays on your computer, the public key is added to GitHub. More secure and convenient once set up.</p>
-                    </div>
-                    
-                    <div class="highlight-box">
-                        <strong>Authentication Issues with HTTPS:</strong> If using HTTPS with 2FA, generate a Personal Access Token (PAT) on GitHub and use it as your password when prompted.
+                        <div class="method-explanation">
+                            <p><strong>HTTPS:</strong> You'll be prompted for username and password. If you have 2FA enabled, you need to use a Personal Access Token (PAT) as your password.</p>
+                            
+                            <p><strong>SSH:</strong> Uses cryptographic keys. The private key stays on your computer, the public key is added to GitHub. More secure and convenient once set up.</p>
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <strong>Authentication Issues with HTTPS:</strong> If using HTTPS with 2FA, generate a Personal Access Token (PAT) on GitHub and use it as your password when prompted.
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- Checklist -->
             <div class="method-content" id="checklist">
-                <div class="card">
-                    <div class="card-title">
-                        <i class="fas fa-clipboard-check"></i>
-                        <h2>Complete Setup Checklist</h2>
+                <div class="method-grid">
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fas fa-clipboard-check"></i>
+                            <h2>Complete Setup Checklist</h2>
+                        </div>
+                        
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong>1. Install Git on new PC</strong><br>
+                                    <div class="command-box" style="margin-top: 8px; font-size: 0.85rem;">
+                                        # Check installation<br>
+                                        git --version
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="checklist-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong>2. Configure Git (once per PC)</strong><br>
+                                    <div class="command-box" style="margin-top: 8px; font-size: 0.85rem;">
+                                        git config --global user.name "Your Name"<br>
+                                        git config --global user.email "your-email@example.com"
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="checklist-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong>3. Set Up Authentication</strong><br>
+                                    <div style="margin-top: 8px; font-size: 0.95rem;">
+                                        • <strong>HTTPS:</strong> Use credentials or Personal Access Token (if 2FA enabled)<br>
+                                        • <strong>SSH:</strong> Set up SSH keys as shown in Method 4
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="checklist-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong>4. Get Your Code</strong><br>
+                                    <div class="command-box" style="margin-top: 8px; font-size: 0.85rem;">
+                                        # Most straightforward approach<br>
+                                        git clone https://github.com/username/repo-name.git
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="checklist-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong>5. Verify Setup</strong><br>
+                                    <div class="command-box" style="margin-top: 8px; font-size: 0.85rem;">
+                                        cd repo-name<br>
+                                        git status<br>
+                                        git log --oneline -5  <span class="command-comment"># See recent commits</span><br>
+                                        git remote -v         <span class="command-comment"># Verify remote URL</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="checklist">
-                        <div class="checklist-item">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>1. Install Git on new PC</strong><br>
-                                <div class="command-box" style="margin-top: 8px;">
-                                    # Check installation<br>
-                                    git --version
-                                </div>
-                            </div>
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fas fa-rocket"></i>
+                            <h2>Recommended Workflow</h2>
                         </div>
                         
-                        <div class="checklist-item">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>2. Configure Git (once per PC)</strong><br>
-                                <div class="command-box" style="margin-top: 8px;">
-                                    git config --global user.name "Your Name"<br>
-                                    git config --global user.email "your-email@example.com"
-                                </div>
-                            </div>
+                        <p>For most users switching to a new PC, this simple workflow is all you need:</p>
+                        
+                        <div class="command-box">
+                            <span class="command-line"># Simple and effective</span><br>
+                            git clone https://github.com/username/repo.git<br>
+                            cd repo<br>
+                            <span class="command-comment"># Work on your changes...</span><br>
+                            git add .<br>
+                            git commit -m "Changes from new PC"<br>
+                            git push origin main
                         </div>
                         
-                        <div class="checklist-item">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>3. Set Up Authentication</strong><br>
-                                <div style="margin-top: 8px;">
-                                    • <strong>HTTPS:</strong> Use credentials or Personal Access Token (if 2FA enabled)<br>
-                                    • <strong>SSH:</strong> Set up SSH keys as shown in Method 4
-                                </div>
-                            </div>
+                        <div class="recommendation-box">
+                            <div class="recommendation-title">Which Method Should You Choose?</div>
+                            
+                            <ul class="step-list">
+                                <li><strong>99% of cases:</strong> Use <strong>Method 1 (git clone)</strong> - it's the simplest and most reliable</li>
+                                <li><strong>Working with forks:</strong> Use <strong>Method 2</strong></li>
+                                <li><strong>Already copied files manually:</strong> Use <strong>Method 3</strong></li>
+                                <li><strong>Prefer SSH/security:</strong> Use <strong>Method 4</strong></li>
+                            </ul>
+                            
+                            <p style="margin-top: 15px; font-size: 1rem; text-align: center;">
+                                <i class="fas fa-star" style="color: #fdcb6e;"></i>
+                                <strong>Just <code>git clone</code> is usually all you need.</strong> The remote is automatically set up as <code>origin</code>, so you can immediately start working and pushing changes.
+                            </p>
                         </div>
-                        
-                        <div class="checklist-item">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>4. Get Your Code</strong><br>
-                                <div class="command-box" style="margin-top: 8px;">
-                                    # Most straightforward approach<br>
-                                    git clone https://github.com/username/repo-name.git
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="checklist-item">
-                            <i class="fas fa-check-circle"></i>
-                            <div>
-                                <strong>5. Verify Setup</strong><br>
-                                <div class="command-box" style="margin-top: 8px;">
-                                    cd repo-name<br>
-                                    git status<br>
-                                    git log --oneline -5  <span class="command-comment"># See recent commits</span><br>
-                                    git remote -v         <span class="command-comment"># Verify remote URL</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-title">
-                        <i class="fas fa-rocket"></i>
-                        <h2>Recommended Workflow</h2>
-                    </div>
-                    
-                    <p>For most users switching to a new PC, this simple workflow is all you need:</p>
-                    
-                    <div class="command-box">
-                        <span class="command-line"># Simple and effective</span><br>
-                        git clone https://github.com/username/repo.git<br>
-                        cd repo<br>
-                        <span class="command-comment"># Work on your changes...</span><br>
-                        git add .<br>
-                        git commit -m "Changes from new PC"<br>
-                        git push origin main
-                    </div>
-                    
-                    <div class="recommendation-box">
-                        <div class="recommendation-title">Which Method Should You Choose?</div>
-                        
-                        <div class="step-list">
-                            <li><strong>99% of cases:</strong> Use <strong>Method 1 (git clone)</strong> - it's the simplest and most reliable</li>
-                            <li><strong>Working with forks:</strong> Use <strong>Method 2</strong></li>
-                            <li><strong>Already copied files manually:</strong> Use <strong>Method 3</strong></li>
-                            <li><strong>Prefer SSH/security:</strong> Use <strong>Method 4</strong></li>
-                        </div>
-                        
-                        <p style="margin-top: 20px; font-size: 1.1rem;">
-                            <i class="fas fa-star" style="color: #fdcb6e;"></i>
-                            <strong>Just <code>git clone</code> is usually all you need.</strong> The remote is automatically set up as <code>origin</code>, so you can immediately start working and pushing changes.
-                        </p>
                     </div>
                 </div>
             </div>
@@ -399,7 +860,7 @@
                 <i class="fab fa-git-alt git-icon"></i> + 
                 <i class="fab fa-github github-icon"></i>
             </p>
-            <p style="margin-top: 10px;">Remember: Always commit and push your changes before switching computers to avoid losing work!</p>
+            <p style="margin-top: 8px; font-size: 0.8rem;">Remember: Always commit and push your changes before switching computers to avoid losing work!</p>
         </footer>
     </div>
 
@@ -422,6 +883,11 @@
                 // Show corresponding content
                 const methodId = button.getAttribute('data-method');
                 document.getElementById(methodId).classList.add('active');
+                
+                // Scroll to top of content area for mobile
+                if (window.innerWidth < 768) {
+                    document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth' });
+                }
             });
         });
         
@@ -448,39 +914,29 @@
                 setTimeout(() => {
                     this.textContent = originalText;
                     this.style.background = '';
-                }, 2000);
+                }, 1500);
             });
         });
         
-        // Simulate typing effect for commands
+        // Initialize page with Method 1 active and pulsing
         document.addEventListener('DOMContentLoaded', function() {
-            // Add a subtle animation to command boxes
-            const commandBoxes = document.querySelectorAll('.command-box');
-            commandBoxes.forEach(box => {
-                box.style.opacity = '0';
-                box.style.transform = 'translateY(10px)';
-                
-                setTimeout(() => {
-                    box.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    box.style.opacity = '1';
-                    box.style.transform = 'translateY(0)';
-                }, 100);
-            });
-            
-            // Highlight the recommended method
+            // Add pulse animation to recommended method button
             const method1Btn = document.querySelector('[data-method="method1"]');
             method1Btn.style.animation = 'pulse 2s infinite';
             
-            // Add CSS for pulse animation
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes pulse {
-                    0% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0.7); }
-                    70% { box-shadow: 0 0 0 10px rgba(9, 132, 227, 0); }
-                    100% { box-shadow: 0 0 0 0 rgba(9, 132, 227, 0); }
-                }
-            `;
-            document.head.appendChild(style);
+            // Ensure all content fits properly
+            setTimeout(() => {
+                document.querySelectorAll('.command-box').forEach(box => {
+                    box.style.overflowX = 'auto';
+                });
+            }, 100);
+            
+            // Handle window resize for better mobile experience
+            window.addEventListener('resize', function() {
+                document.querySelectorAll('.method-content.active .command-box').forEach(box => {
+                    box.scrollLeft = 0;
+                });
+            });
         });
     </script>
 </body>
